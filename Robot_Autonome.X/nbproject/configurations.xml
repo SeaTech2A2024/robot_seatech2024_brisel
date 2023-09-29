@@ -7,6 +7,9 @@
       <itemPath>ChipConfig.h</itemPath>
       <itemPath>IO.h</itemPath>
       <itemPath>timer.h</itemPath>
+      <itemPath>robot.h</itemPath>
+      <itemPath>toolBox.h</itemPath>
+      <itemPath>PWM.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -19,6 +22,9 @@
       <itemPath>ChipConfig.c</itemPath>
       <itemPath>IO.c</itemPath>
       <itemPath>timer.c</itemPath>
+      <itemPath>robot.c</itemPath>
+      <itemPath>toolBox.c</itemPath>
+      <itemPath>PWM.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -390,6 +396,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-557eb"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/GEII Robot/Desktop/Brisel_Bassinga/robot_seatech2024_brisel/Robot_Autonome.X/debug/default/Robot_Autonome_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.ledbrightness" value="5"/>

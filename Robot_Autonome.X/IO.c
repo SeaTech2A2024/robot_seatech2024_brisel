@@ -24,6 +24,8 @@ void InitIO()
     _TRISG7  = 0; // LED Bleue
     
     //****** Moteurs ************************
+    TRISBbits.TRISB14 = 0;
+    TRISBbits.TRISB15 = 0;
 
     // Configuration des entrées
     

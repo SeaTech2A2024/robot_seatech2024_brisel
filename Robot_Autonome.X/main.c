@@ -10,24 +10,22 @@
 #include <xc.h>
 #include "ChipConfig.h"
 #include "IO.h"
+#include "PWM.h"
 
-/*
- * 
- */
+
 int main(int argc, char** argv) {
     
+    //Initialization of clock
     InitOscillator();
     
+    //Initialization of GPIOs
     InitIO();
     
-    LED_ORANGE = 1;
-    LED_BLEUE = 1;
-    LED_BLANCHE = 1;
+    InitPWM();
+    PWMSetSpeed(0, MOTEUR_GAUCHE);
     
     while(1){
-        LED_ORANGE = ~LED_ORANGE;
-        LED_BLEUE = ~LED_BLEUE;
-        LED_BLANCHE = ~LED_BLANCHE;
+        
     }
 
     return (EXIT_SUCCESS);
