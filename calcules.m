@@ -1,0 +1,1 @@
+    pr1 = @(f,PS,Fcy) Fcy/(PS*f);

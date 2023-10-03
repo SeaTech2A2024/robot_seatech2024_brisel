@@ -21,8 +21,13 @@ int main(int argc, char** argv) {
     //Initialization of GPIOs
     InitIO();
     
+    //Initialization of PWM
     InitPWM();
-    PWMSetSpeed(0, MOTEUR_GAUCHE);
+    
+    InitTimer1();
+    
+    PWMSetSpeedConsigne(50, MOTEUR_DROIT);
+    PWMSetSpeedConsigne(50, MOTEUR_GAUCHE);
     
     while(1){
         

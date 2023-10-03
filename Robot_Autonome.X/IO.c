@@ -26,6 +26,9 @@ void InitIO()
     //****** Moteurs ************************
     TRISBbits.TRISB14 = 0;
     TRISBbits.TRISB15 = 0;
+    
+    TRISCbits.TRISC6 = 0;
+    TRISCbits.TRISC7 = 0;
 
     // Configuration des entrées
     
