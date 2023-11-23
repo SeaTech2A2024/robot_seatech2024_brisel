@@ -11,6 +11,8 @@
 #include "ChipConfig.h"
 #include "IO.h"
 #include "PWM.h"
+#include "ADC.h"
+#include "timer.h"
 
 
 int main(int argc, char** argv) {
@@ -24,12 +26,31 @@ int main(int argc, char** argv) {
     //Initialization of PWM
     InitPWM();
     
+    // Initialization of Timer1
     InitTimer1();
     
-    PWMSetSpeedConsigne(50, MOTEUR_DROIT);
-    PWMSetSpeedConsigne(50, MOTEUR_GAUCHE);
+    // Initialization of ADC1
+    InitADC1();
+    
+    PWMSetSpeedConsigne(0, MOTEUR_DROIT);
+    PWMSetSpeedConsigne(0, MOTEUR_GAUCHE);
+    
+    unsigned int *result;
+    unsigned int ADCValue0;
+    unsigned int ADCValue1;
+    unsigned int ADCValue2;
+
     
     while(1){
+        if(ADCIsConversionFinished()){
+            ADCClearConversionFinishedFlag();
+            
+            result = ADCGetResult();
+            
+            ADCValue0 = result[0];
+            ADCValue1 = result[1];
+            ADCValue2 = result[2];
+        }
         
     }
 

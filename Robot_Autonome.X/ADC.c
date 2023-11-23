@@ -54,7 +54,7 @@ void InitADC1(void) {
     ANSELCbits.ANSC11 = 1;
     ANSELGbits.ANSG9 = 1;
 
-    AD1CSSLbits.CSS6 = 1; // Enable AN6 for scan
+    AD1CSSLbits.CSS6 = 1;  // Enable AN6 for scan
     AD1CSSLbits.CSS11 = 1; // Enable AN11 for scan
     AD1CSSHbits.CSS16 = 1; // Enable AN16 for scan
 
