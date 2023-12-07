@@ -4,9 +4,10 @@
 #include "PWM.h"
 #include "Robot.h"
 #include "ToolBox.h"
+#include "main.h"
 
 #define PWMPER 40.0
-float acceleration = 0.1;
+float acceleration = 0.5;
 
 void InitPWM(void) {
     PTCON2bits.PCLKDIV = 0b000; //Divide by 1
