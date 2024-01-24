@@ -7,7 +7,7 @@
 #include "main.h"
 
 #define PWMPER 40.0
-float acceleration = 0.5;
+float acceleration = 2;
 
 void InitPWM(void) {
     PTCON2bits.PCLKDIV = 0b000; //Divide by 1

@@ -6,6 +6,9 @@
 #include "main.h"
 
 unsigned long timestamp;
+unsigned long timer_bloc;
+unsigned long tmier_freinage;
+
 unsigned char toggle = 0;
 
 //Initialisation d?un timer 32 bits
@@ -116,6 +119,8 @@ void InitTimer4(void) {
 void __attribute__((interrupt, no_auto_psv)) _T4Interrupt(void) {
     IFS1bits.T4IF = 0;
     timestamp+=1;
+    timer_bloc = timer_bloc + 1;
+    //timer_freinage = timer_freinage + 1;
     OperatingSystemLoop();
    // LED_ORANGE = !LED_ORANGE;
 }
