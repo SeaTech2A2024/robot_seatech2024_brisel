@@ -1,5 +1,5 @@
 build/default/production/main.o: main.c ChipConfig.h IO.h PWM.h ADC.h \
- timer.h robot.h main.h UART.h
+ timer.h robot.h main.h UART.h CB_TX1.h
 
 ChipConfig.h:
 
@@ -16,3 +16,5 @@ robot.h:
 main.h:
 
 UART.h:
+
+CB_TX1.h:
