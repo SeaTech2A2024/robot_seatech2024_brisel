@@ -34,3 +34,4 @@
 #define OBSTACLE_MILIEU_DROIT 5
 
 void OperatingSystemLoop(void);
+void SetNextRobotStateInAutomaticMode();
