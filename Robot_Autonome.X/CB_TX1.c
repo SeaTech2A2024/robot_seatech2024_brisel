@@ -28,18 +28,11 @@ void CB_TX1_Add(unsigned char value) {
 
 unsigned char CB_TX1_Get(void) {
     unsigned char value = cbTx1Buffer[cbTx1Tail];
+    cbTx1Buffer[cbTx1Tail] = 0;
     cbTx1Tail++;
     if (cbTx1Tail >= CBTX1_BUFFER_SIZE)
         cbTx1Tail = 0;
     return value;
-}
-
-void __attribute__((interrupt, no_auto_psv)) _U1TXInterrupt(void) {
-    IFS0bits.U1TXIF = 0; // clear TX interrupt flag
-    if (cbTx1Tail != cbTx1Head) {
-        SendOne();
-    } else
-        isTransmitting = 0;
 }
 
 void SendOne() {
@@ -65,4 +58,15 @@ int CB_TX1_GetRemainingSize(void) {
     //return size of remaining size in circular buffer
     return CBTX1_BUFFER_SIZE - CB_TX1_GetDataSize();
 
+}
+
+/////////////////////////////////////////////////////////////
+// INTERRUPTION
+/////////////////////////////////////////////////////////////
+void __attribute__((interrupt, no_auto_psv)) _U1TXInterrupt(void) {
+    IFS0bits.U1TXIF = 0; // clear TX interrupt flag
+    if (cbTx1Tail != cbTx1Head) {
+        SendOne();
+    } else
+        isTransmitting = 0;
 }
