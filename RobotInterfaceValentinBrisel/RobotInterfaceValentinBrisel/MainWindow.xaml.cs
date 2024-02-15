@@ -93,15 +93,13 @@ namespace RobotInterfaceValentinBrisel
             }
             
             SendMessage();
-            
-
-
         }
 
-        private void textBoxEmission_KeyUp(object sender, KeyEventArgs e)
+        private void textBoxEmission_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
+                e.Handled = true;
                 SendMessage();
             }
         }
