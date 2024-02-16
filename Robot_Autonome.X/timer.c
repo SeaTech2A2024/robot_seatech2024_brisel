@@ -121,6 +121,6 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt(void) {
     timestamp+=1;
     timer_bloc = timer_bloc + 1;
     //timer_freinage = timer_freinage + 1;
-    OperatingSystemLoop();
+    //OperatingSystemLoop();
    // LED_ORANGE = !LED_ORANGE;
 }

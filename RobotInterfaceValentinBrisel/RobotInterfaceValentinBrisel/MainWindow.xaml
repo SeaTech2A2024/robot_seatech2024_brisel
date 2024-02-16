@@ -5,31 +5,54 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RobotInterfaceValentinBrisel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="600" Width="800">
+    <Grid Margin="0,0,0,-6" Width="800">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="16"/>
             <RowDefinition/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="7"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="235.84"/>
+            <RowDefinition Height="5.2"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30"/>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="30"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="365*"/>
+            <ColumnDefinition Width="11"/>
+            <ColumnDefinition Width="364*"/>
             <ColumnDefinition Width="30"/>
         </Grid.ColumnDefinitions>
         <GroupBox x:Name="Emission" Header="Emission" BorderBrush="Black" Background="#FFDDDDDD" Grid.Column="1" Grid.Row="1">
-            <TextBox x:Name="textBoxEmission" TextWrapping="Wrap" AcceptsReturn="True" KeyUp="textBoxEmission_KeyUp" />
+            <TextBox x:Name="textBoxEmission" TextWrapping="Wrap" AcceptsReturn="False" KeyUp="textBoxEmission_KeyUp" />
         </GroupBox>
         <GroupBox x:Name="groupBox1" Header="Réception" BorderBrush="Black" Background="#FFDDDDDD" Grid.Column="3" Grid.Row="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <TextBox x:Name="textBoxReception" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True"/>
         </GroupBox>
-        <Button x:Name="buttonEnvoyer" Grid.Column="1" Content="Envoyer" Margin="100,0,100,0" Grid.Row="3" HorizontalAlignment="Center" Click="buttonEnvoyer_Click"/>
+        <Button x:Name="buttonEnvoyer" Grid.Column="1" Content="Envoyer" Margin="63,0,0,0" Grid.Row="3" HorizontalAlignment="Left" Click="buttonEnvoyer_Click" Height="30" VerticalAlignment="Center" Width="50" RenderTransformOrigin="0.52,-0.059"/>
         <Button x:Name="boutonClear" Grid.Column="3" Content="Clear" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Height="30" Width="52" Click="boutonClear_Click"/>
-        <Button x:Name="boutonTest" Grid.Column="1" Content="Test" HorizontalAlignment="Left" Margin="301,0,0,0" Grid.Row="3" VerticalAlignment="Center" Height="30" Width="44" RenderTransformOrigin="1.275,0.719" Click="boutonTest_Click"/>
+        <Button x:Name="boutonTest" Grid.Column="1" Content="Test" Margin="224,0,91,0" Grid.Row="3" RenderTransformOrigin="1.275,0.719" Click="boutonTest_Click" VerticalAlignment="Center" Height="30"/>
+        <GroupBox x:Name="telemetre" Grid.Column="3" Header="Télémètre IR" Grid.Row="4" Margin="26,2,202,24"/>
+        <GroupBox x:Name="moteurs" Grid.Column="3" Header="Moteurs" Grid.Row="4" Margin="178,2,10,24">
+            <Label x:Name="vitesse_droite" Content="Vitesse Droite :" HorizontalAlignment="Left" Margin="10,0,0,0" Height="25" Width="95"/>
+        </GroupBox>
+        <GroupBox x:Name="leds" Grid.Column="1" Header="LEDS" Grid.Row="4" Margin="128,10,127,8"/>
+        <Label x:Name="vitesse_gauche" Grid.Column="3" Content="Vitesse Gauche :" HorizontalAlignment="Left" Margin="193,41,0,0" Grid.Row="4" VerticalAlignment="Top" RenderTransformOrigin="0.741,0.726"/>
+        <TextBox x:Name="vitesse_gauche_display" Grid.Column="3" HorizontalAlignment="Left" Margin="294,44,0,0" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" Height="20" IsReadOnly="True"/>
+        <TextBox x:Name="vitesse_droite_display" Grid.Column="3" HorizontalAlignment="Left" Margin="294,105,0,0" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="30" Height="20" IsReadOnly="True" RenderTransformOrigin="0.864,0.792"/>
+        <Label x:Name="IR_gauche" Grid.Column="3" Content="IR Gauche :" HorizontalAlignment="Left" Margin="27,40,0,0" Grid.Row="4" VerticalAlignment="Top" RenderTransformOrigin="0.196,0.695"/>
+        <Label x:Name="IR_centre" Grid.Column="3" Content="IR Centre :" HorizontalAlignment="Left" Margin="27,97,0,0" Grid.Row="4" VerticalAlignment="Top" RenderTransformOrigin="0.26,0.664"/>
+        <Label x:Name="IR_droit" Grid.Column="3" Content="IR Droit :" HorizontalAlignment="Left" Margin="27,152,0,0" Grid.Row="4" VerticalAlignment="Top"/>
+        <TextBox x:Name="IR_gauche_display" Grid.Column="3" HorizontalAlignment="Left" Margin="96,43,0,0" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="28" Height="20" RenderTransformOrigin="0.558,0.062" IsReadOnly="True"/>
+        <TextBox x:Name="IR_centre_display" Grid.Column="3" HorizontalAlignment="Left" Margin="97,100,0,0" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="27" Height="20" RenderTransformOrigin="0.558,0.062" IsReadOnly="True"/>
+        <TextBox x:Name="IR_droit_display" Grid.Column="3" HorizontalAlignment="Left" Margin="97,155,0,0" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="27" Height="20" RenderTransformOrigin="0.558,0.062" IsReadOnly="True"/>
+        <CheckBox x:Name="led_rouge" Grid.Column="1" Content="LED Rouge" HorizontalAlignment="Center" Margin="0,42,0,0" Grid.Row="4" VerticalAlignment="Top" IsChecked="False" IsEnabled="False"/>
+        <CheckBox x:Name="led_bleue" Grid.Column="1" Content="LED Bleue" HorizontalAlignment="Left" Margin="144,99,0,0" Grid.Row="4" VerticalAlignment="Top" IsChecked="False" IsEnabled="False"/>
+        <CheckBox x:Name="led_blanc" Grid.Column="1" Content="LED Blanc" HorizontalAlignment="Left" Margin="144,157,0,0" Grid.Row="4" VerticalAlignment="Top" IsChecked="False" IsEnabled="False"/>
+        <Label x:Name="IR_gauche_unite" Grid.Column="3" Content="cm" HorizontalAlignment="Left" Margin="124,40,0,0" Grid.Row="4" VerticalAlignment="Top"/>
+        <Label x:Name="IR_centre_unite" Grid.Column="3" Content="cm" HorizontalAlignment="Left" Margin="124,97,0,0" Grid.Row="4" VerticalAlignment="Top"/>
+        <Label x:Name="IR_droit_unite" Grid.Column="3" Content="cm" HorizontalAlignment="Left" Margin="124,152,0,0" Grid.Row="4" VerticalAlignment="Top"/>
+        <Label x:Name="vitesse_gauche_unite" Grid.Column="3" Content="%" HorizontalAlignment="Left" Margin="324,40,0,0" Grid.Row="4" VerticalAlignment="Top"/>
+        <Label x:Name="vitesse_gauche_unite_Copy" Grid.Column="3" Content="%" HorizontalAlignment="Left" Margin="324,101,0,0" Grid.Row="4" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
