@@ -16,6 +16,8 @@ using ExtendedSerialPort_NS;
 using System.IO.Ports;
 using System.Windows.Threading;
 using System.Runtime.ConstrainedExecution;
+using System.Windows.Interop;
+using static RobotInterfaceValentinBrisel.Robot;
 
 namespace RobotInterfaceValentinBrisel
 {
@@ -112,10 +114,10 @@ namespace RobotInterfaceValentinBrisel
             UartEncodeAndSendMessage((int)Command_ID.transmission_texte, msgPayLoad.Length, msgPayLoad);
 
             //Allumer LEDs rouge
-            UartEncodeAndSendMessage((int)Command_ID.reglage_led, 2, new byte[] { (byte)LED.led_rouge, 1 });
+            UartEncodeAndSendMessage((int)Command_ID.reglage_led, 2, new byte[] { (byte)Robot.LED.led_rouge, 1 });
 
             //Allumer LEDs blanc
-            UartEncodeAndSendMessage((int)Command_ID.reglage_led, 2, new byte[] { (byte)LED.led_blanc, 1 });
+            UartEncodeAndSendMessage((int)Command_ID.reglage_led, 2, new byte[] { (byte)Robot.LED.led_blanc, 1 });
 
             //Distance Telemetre
             UartEncodeAndSendMessage((int)Command_ID.distance_telemetre_IR, 3, new byte[] { 28, 120,45 });
@@ -172,7 +174,7 @@ namespace RobotInterfaceValentinBrisel
         StateReception rcvState = StateReception.Waiting;
         int msgDecodedFunction = 0;
         int msgDecodedPayloadLength = 0;
-        byte[] msgDecodedPayload;
+        byte[] msgDecodedPayload = new byte[0];
         int msgDecodedPayloadIndex = 0;
 
         private void DecodeMessage(byte c)
@@ -254,14 +256,8 @@ namespace RobotInterfaceValentinBrisel
             transmission_texte = 0x0080,
             reglage_led = 0x0020,
             distance_telemetre_IR = 0x0030,
-            consigne_vitesse = 0x0040
-        }
-
-        public enum LED
-        {
-            led_rouge,
-            led_bleue,
-            led_blanc
+            consigne_vitesse = 0x0040,
+            RobotState = 0x0050
         }
 
         private void ProcessDecodedMessage(int msgFunction,int msgPayloadLength, byte[] msgPayload)
@@ -269,33 +265,34 @@ namespace RobotInterfaceValentinBrisel
             switch (msgFunction)
             {
                 case (int)Command_ID.transmission_texte:
+                    robot.receivedText = Encoding.ASCII.GetString(msgPayload);
                     displayMsg(msgPayload);
                     break;
 
                 case (int)Command_ID.reglage_led:
-                    if ( (msgPayload[0]==(int)LED.led_rouge) && (msgPayload[1]==1) )
+                    if ( (msgPayload[0]==(int)Robot.LED.led_rouge) && (msgPayload[1]==1) )
                     {
                         led_rouge.IsChecked = true;
                     }
-                    else if ((msgPayload[0] == (int)LED.led_rouge) && (msgPayload[1] == 0) )
+                    else if ((msgPayload[0] == (int)Robot.LED.led_rouge) && (msgPayload[1] == 0) )
                     {
                         led_rouge.IsChecked= false;
                     }
 
-                    if ((msgPayload[0] == (int)LED.led_bleue) && (msgPayload[1] == 1))
+                    if ((msgPayload[0] == (int)Robot.LED.led_bleue) && (msgPayload[1] == 1))
                     {
                         led_bleue.IsChecked = true;
                     }
-                    else if ((msgPayload[0] == (int)LED.led_bleue) && (msgPayload[1] == 0))
+                    else if ((msgPayload[0] == (int)Robot.LED.led_bleue) && (msgPayload[1] == 0))
                     {
                         led_bleue.IsChecked = false;
                     }
 
-                    if ((msgPayload[0] == (int)LED.led_blanc) && (msgPayload[1] == 1))
+                    if ((msgPayload[0] == (int)Robot.LED.led_blanc) && (msgPayload[1] == 1))
                     {
                         led_blanc.IsChecked = true;
                     }
-                    else if ((msgPayload[0] == (int)LED.led_blanc) && (msgPayload[1] == 0))
+                    else if ((msgPayload[0] == (int)Robot.LED.led_blanc) && (msgPayload[1] == 0))
                     {
                         led_blanc.IsChecked = false;
                     }
@@ -303,14 +300,30 @@ namespace RobotInterfaceValentinBrisel
                     break;
 
                 case (int)Command_ID.distance_telemetre_IR:
-                    IR_gauche_display.Text = msgPayload[0].ToString();
-                    IR_centre_display.Text = msgPayload[1].ToString();
-                    IR_droit_display.Text = msgPayload[2].ToString();
+                    robot.distanceTelemetreGauche = msgPayload[0];
+                    IR_gauche_display.Text = robot.distanceTelemetreGauche.ToString();
+
+                    robot.distanceTelemetreCentre = msgPayload[1];
+                    IR_centre_display.Text = robot.distanceTelemetreCentre.ToString();
+
+                    robot.distanceTelemetreDroit = msgPayload[2];
+                    IR_droit_display.Text = robot.distanceTelemetreDroit.ToString();
                     break;
 
                 case (int)Command_ID.consigne_vitesse:
-                    vitesse_gauche_display.Text = msgPayload[0].ToString();
-                    vitesse_droite_display.Text = msgPayload[1].ToString();
+                    robot.vitesse_gauche = msgPayload[0];
+                    vitesse_gauche_display.Text = robot.vitesse_gauche.ToString();
+
+                    robot.vitesse_droit = msgPayload[1];
+                    vitesse_droite_display.Text = robot.vitesse_droit.ToString();
+                    break;
+
+                case (int)Command_ID.RobotState:
+                    int instant = (((int)msgPayload[1]) << 24) + (((int)msgPayload[2]) << 16)
+                    + (((int)msgPayload[3]) << 8) + ((int)msgPayload[4]);
+
+                    textBoxReception.Text += "\nRobot State : " + ((Robot.StateRobot)(msgPayload[0])).ToString() +
+                    " - " + instant.ToString() + " ms";
                     break;
 
                 default:

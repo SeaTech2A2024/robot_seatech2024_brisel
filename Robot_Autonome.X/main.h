@@ -35,3 +35,4 @@
 
 void OperatingSystemLoop(void);
 void SetNextRobotStateInAutomaticMode();
+void envoieChangementEtat();
