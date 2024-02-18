@@ -33,6 +33,7 @@ namespace RobotInterfaceValentinBrisel
         //string receivedText;
         DispatcherTimer timerAffichage;
         Robot robot = new Robot();
+        bool autoControlActivated = true;
 
 
 

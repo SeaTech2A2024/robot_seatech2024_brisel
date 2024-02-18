@@ -36,14 +36,14 @@ void envoieChangementEtat() {
 void OperatingSystemLoop(void) {
     switch (stateRobot) {
         case STATE_ATTENTE:
-            timestamp = 0;
+            timer_bloc = 0;
             PWMSetSpeedConsigne(0, MOTEUR_DROIT);
             PWMSetSpeedConsigne(0, MOTEUR_GAUCHE);
-            //stateRobot = STATE_ATTENTE_EN_COURS;
+            stateRobot = STATE_ATTENTE_EN_COURS;
             envoieChangementEtat();
             break;
         case STATE_ATTENTE_EN_COURS:
-            if (timestamp > 1000)
+            if ( (timer_bloc > 2000) && (autoControlActivated==1))
                 stateRobot = STATE_AVANCE;
             break;
 
@@ -320,7 +320,11 @@ int main(int argc, char** argv) {
                 nEchantillon = 0;
             nEchantillon++;
         }
-        //SetNextRobotStateInAutomaticMode();
+        
+        if(autoControlActivated==1)
+        {
+            SetNextRobotStateInAutomaticMode();
+        }
         
         if(nEchantillon == 7)
         {
@@ -342,8 +346,13 @@ int main(int argc, char** argv) {
         
 //        unsigned char payload[] = {'B', 'o', 'n', 'j', 'o', 'u', 'r'};
 //        UartEncodeAndSendMessage(0x0080,7,payload);
-//        __delay32(40000000);
-        
+//        __delay32(40000000);      
+
+        int i;
+        for (i = 0; i < CB_RX1_GetDataSize(); i++) {
+            unsigned char c = CB_RX1_Get();
+            UartDecodeMessage(c);
+        }
         
         /*----------------------------------------------------------*/
     }

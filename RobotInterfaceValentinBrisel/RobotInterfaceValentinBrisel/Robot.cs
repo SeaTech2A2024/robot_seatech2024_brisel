@@ -46,7 +46,13 @@ namespace RobotInterfaceValentinBrisel
             STATE_ARRET = 12,
             STATE_ARRET_EN_COURS = 13,
             STATE_RECULE = 14,
-            STATE_RECULE_EN_COURS = 15
+            STATE_RECULE_EN_COURS = 15,
+            STATE_TOURNE_DROITE_VITE = 16,
+            STATE_TOURNE_DROITE_VITE_EN_COURS = 17,
+            STATE_TOURNE_GAUCHE_VITE = 18,
+            STATE_TOURNE_GAUCHE_VITE_EN_COURS = 19,
+            STATE_FREINAGE = 20,
+            STATE_FREINAGE_EN_COURS = 21
         }
     }
 

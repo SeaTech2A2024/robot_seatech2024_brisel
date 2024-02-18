@@ -33,6 +33,8 @@
 #define OBSTACLE_MILIEU_GAUCHE 4
 #define OBSTACLE_MILIEU_DROIT 5
 
+extern unsigned char stateRobot;
+
 void OperatingSystemLoop(void);
 void SetNextRobotStateInAutomaticMode();
 void envoieChangementEtat();

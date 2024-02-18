@@ -5,9 +5,8 @@
 #include "ADC.h"
 #include "main.h"
 
-unsigned long timestamp;
-unsigned long timer_bloc;
-unsigned long tmier_freinage;
+unsigned long timestamp = 0;
+unsigned long timer_bloc = 0;
 
 unsigned char toggle = 0;
 
@@ -31,22 +30,9 @@ void InitTimer23(void) {
 }
 
 //Interruption du timer 32 bits sur 2-3
-
 void __attribute__((interrupt, no_auto_psv)) _T3Interrupt(void) {
     IFS0bits.T3IF = 0; // Clear Timer3 Interrupt Flag
     LED_ORANGE = !LED_ORANGE;
-
-    /*
-    if(toggle == 0) {
-        PWMSetSpeed(20, MOTEUR_DROIT);
-        PWMSetSpeed(20, MOTEUR_GAUCHE);
-        toggle = 1;
-    } else {
-        PWMSetSpeed(-20, MOTEUR_DROIT);
-        PWMSetSpeed(-20, MOTEUR_GAUCHE);
-        toggle = 0;
-    }
-     */
 }
 
 void SetFreqTimer1(float freq) {
@@ -67,8 +53,7 @@ void SetFreqTimer1(float freq) {
 }
 
 
-//Initialisation d?un timer 16 bits
-
+//Initialisation d'un timer 16 bits
 void InitTimer1(void) {    
     //Timer1 pour horodater les mesures (1ms)
     T1CONbits.TON = 0; // Disable Timer
@@ -80,7 +65,6 @@ void InitTimer1(void) {
 }
 
 //Interruption du timer 1
-
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     IFS0bits.T1IF = 0;
    // LED_BLANCHE = !LED_BLANCHE;
@@ -119,8 +103,8 @@ void InitTimer4(void) {
 //Interruption du timer 4
 void __attribute__((interrupt, no_auto_psv)) _T4Interrupt(void) {
     IFS1bits.T4IF = 0;
-    timestamp+=1;
-    timer_bloc = timer_bloc + 1;
+    timestamp += 1;
+    timer_bloc += 1;
     OperatingSystemLoop();
    // LED_ORANGE = !LED_ORANGE;
 }
