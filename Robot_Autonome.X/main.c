@@ -54,7 +54,8 @@ void OperatingSystemLoop(void) {
             envoieChangementEtat();
             break;
         case STATE_AVANCE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            if ( autoControlActivated==1)
+                SetNextRobotStateInAutomaticMode();
             break;
 
         case STATE_TOURNE_GAUCHE:
@@ -64,7 +65,8 @@ void OperatingSystemLoop(void) {
             envoieChangementEtat();
             break;
         case STATE_TOURNE_GAUCHE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            if ( autoControlActivated==1)
+                SetNextRobotStateInAutomaticMode();
             break;
 
         case STATE_TOURNE_DROITE:
@@ -74,7 +76,8 @@ void OperatingSystemLoop(void) {
             envoieChangementEtat();
             break;
         case STATE_TOURNE_DROITE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            if ( autoControlActivated==1)
+                SetNextRobotStateInAutomaticMode();
             break;
 
         case STATE_TOURNE_SUR_PLACE_GAUCHE:
@@ -84,7 +87,8 @@ void OperatingSystemLoop(void) {
             envoieChangementEtat();
             break;
         case STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            if ( autoControlActivated==1)
+                SetNextRobotStateInAutomaticMode();
             break;
 
         case STATE_TOURNE_SUR_PLACE_DROITE:
@@ -94,7 +98,8 @@ void OperatingSystemLoop(void) {
             envoieChangementEtat();
             break;
         case STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            if ( autoControlActivated==1)
+                SetNextRobotStateInAutomaticMode();
             break;
             
         case STATE_TOURNE_GAUCHE_VITE:
@@ -104,7 +109,8 @@ void OperatingSystemLoop(void) {
             envoieChangementEtat();
             break;
         case STATE_TOURNE_GAUCHE_VITE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            if ( autoControlActivated==1)
+                SetNextRobotStateInAutomaticMode();
             break;
             
         case STATE_TOURNE_DROITE_VITE:
@@ -114,7 +120,8 @@ void OperatingSystemLoop(void) {
             envoieChangementEtat();
             break;
         case STATE_TOURNE_DROITE_VITE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            if ( autoControlActivated==1)
+                SetNextRobotStateInAutomaticMode();
             break;
             
         case STATE_FREINAGE:
@@ -122,7 +129,8 @@ void OperatingSystemLoop(void) {
             PWMSetSpeedConsigne(-25, MOTEUR_GAUCHE);
 
         case STATE_FREINAGE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            if ( autoControlActivated==1)
+                SetNextRobotStateInAutomaticMode();
             break;
 
         default:
@@ -316,7 +324,7 @@ int main(int argc, char** argv) {
             volts = ((float) result [4])* 3.3 / 4096 * 3.2;
             robotState.distanceTelemetreGauche = 34 / volts - 5;
             
-            if (nEchantillon == 7)
+            if (nEchantillon == 8)
                 nEchantillon = 0;
             nEchantillon++;
         }
@@ -326,10 +334,13 @@ int main(int argc, char** argv) {
             SetNextRobotStateInAutomaticMode();
         }
         
-        if(nEchantillon == 7)
+        if(nEchantillon == 8)
         {
-            unsigned char payload[3] = {robotState.distanceTelemetreGauche, robotState.distanceTelemetreCentre, robotState.distanceTelemetreDroit};
-            UartEncodeAndSendMessage(0x0030,3,payload);
+            unsigned char payloadTelemetre[3] = {robotState.distanceTelemetreGauche, robotState.distanceTelemetreCentre, robotState.distanceTelemetreDroit};
+            UartEncodeAndSendMessage(0x0030,3,payloadTelemetre);
+            
+            unsigned char payloadVitesse[2] = {robotState.vitesseGaucheConsigne, robotState.vitesseDroiteConsigne};
+            UartEncodeAndSendMessage(0x0040,2,payloadVitesse);
         }
         /*----------------------------------------------------------*/
         

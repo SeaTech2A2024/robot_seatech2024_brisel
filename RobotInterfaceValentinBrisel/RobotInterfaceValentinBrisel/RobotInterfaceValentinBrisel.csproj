@@ -11,4 +11,14 @@
     <ProjectReference Include="..\ExtendedSerialPort .NET6\ExtendedSerialPort\ExtendedSerialPort\ExtendedSerialPort.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MouseKeyboardActivityMonitor" Version="4.0.5150.10665" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MouseKeyboardActivityMonitor">
+      <HintPath>..\mousekeyboardactivitymonitor\mousekeyboardactivitymonitor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

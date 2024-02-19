@@ -18,6 +18,9 @@ using System.Windows.Threading;
 using System.Runtime.ConstrainedExecution;
 using System.Windows.Interop;
 using static RobotInterfaceValentinBrisel.Robot;
+using MouseKeyboardActivityMonitor.WinApi;
+using MouseKeyboardActivityMonitor;
+
 
 namespace RobotInterfaceValentinBrisel
 {
@@ -34,10 +37,12 @@ namespace RobotInterfaceValentinBrisel
         DispatcherTimer timerAffichage;
         Robot robot = new Robot();
         bool autoControlActivated = true;
+        private readonly KeyboardHookListener m_KeyboardHookManager;
 
 
 
         public MainWindow()
+
         {
             InitializeComponent();
             serialPort1 = new ExtendedSerialPort("COM6", 115200, Parity.None, 8, StopBits.One);
@@ -49,12 +54,55 @@ namespace RobotInterfaceValentinBrisel
             timerAffichage.Tick += TimerAffichage_Tick;
             timerAffichage.Start();
 
-            IR_gauche_display.Text ="0";
+            IR_gauche_display.Text = "0";
             IR_centre_display.Text = "0";
             IR_droit_display.Text = "0";
             vitesse_gauche_display.Text = "0";
             vitesse_droite_display.Text = "0";
+
+            m_KeyboardHookManager = new KeyboardHookListener(new GlobalHooker());
+            m_KeyboardHookManager.Enabled = true;
+            //m_KeyboardHookManager.KeyDown += HookManager_KeyDown;
         }
+
+        private void HookManager_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (autoControlActivated == false)
+            {
+                switch (e.Key)
+                {
+                    case Key.Left:
+                        UartEncodeAndSendMessage(0x0051, 1, new byte[] { ( byte)StateRobot.STATE_TOURNE_SUR_PLACE_GAUCHE});
+                        break;
+
+                    case Key.Right:
+                        UartEncodeAndSendMessage(0x0051, 1, new byte[]
+                        {
+                                (byte) StateRobot.STATE_TOURNE_SUR_PLACE_DROITE
+                        });
+                        break;
+
+                    case Key.Up:
+                        UartEncodeAndSendMessage(0x0051, 1, new byte[]
+                        { (byte) StateRobot.STATE_AVANCE});
+                        break;
+
+                    case Key.Down:
+                        UartEncodeAndSendMessage(0x0051, 1, new byte[]
+                        { (byte) StateRobot.STATE_ARRET});
+                        break;
+
+                    case Key.PageDown:
+                        UartEncodeAndSendMessage(0x0051, 1, new byte[]
+                        { (byte) StateRobot.STATE_RECULE});
+                        break;
+                }
+            }
+
+            throw new NotImplementedException();
+        }
+
+
 
         private void TimerAffichage_Tick(object? sender, EventArgs e)
         {
@@ -62,10 +110,6 @@ namespace RobotInterfaceValentinBrisel
             {
                 var c = robot.byteListReceived.Dequeue();
                 DecodeMessage(c);
-
-                //textBoxReception.Text += c.ToString("X2") + " ";
-                //textBoxReception.Text += Encoding.ASCII.GetString(new byte[] { c });
-
             }
 
         }
@@ -73,7 +117,7 @@ namespace RobotInterfaceValentinBrisel
         public void SerialPort1_DataReceived(object? sender, DataReceivedArgs e)
         {
             //robot.receivedText += Encoding.UTF8.GetString(e.Data, 0, e.Data.Length);
-            //textBoxReception.Text += "000";
+            //textBoxReception.Text += "";
 
             for (int i = 0; i < e.Data.Length; i++)
             {
@@ -83,8 +127,6 @@ namespace RobotInterfaceValentinBrisel
 
         private void SendMessage()
         {
-            //textBoxReception.Text += "\nReçu : " + textBoxEmission.Text;
-
             serialPort1.Write(textBoxEmission.Text);
             textBoxEmission.Text = "";
         }
@@ -109,22 +151,19 @@ namespace RobotInterfaceValentinBrisel
 
         private void boutonTest_Click(object sender, RoutedEventArgs e)
         {
-            //Envoyer un texte
-            string texte = "Bonjour";
-            byte[] msgPayLoad = Encoding.ASCII.GetBytes(texte);
-            UartEncodeAndSendMessage((int)Command_ID.transmission_texte, msgPayLoad.Length, msgPayLoad);
+            if (autoControlActivated)
+            {
+                UartEncodeAndSendMessage((int)Command_ID.SET_ROBOT_AUTO_CONTROL, 1, new byte[] { 1 });
+                autoControlActivated = false;
+                
 
-            //Allumer LEDs rouge
-            UartEncodeAndSendMessage((int)Command_ID.reglage_led, 2, new byte[] { (byte)Robot.LED.led_rouge, 1 });
+            }
+            else
+            {
+                UartEncodeAndSendMessage((int)Command_ID.SET_ROBOT_AUTO_CONTROL, 1, new byte[] { 0 });
+                autoControlActivated = true;
 
-            //Allumer LEDs blanc
-            UartEncodeAndSendMessage((int)Command_ID.reglage_led, 2, new byte[] { (byte)Robot.LED.led_blanc, 1 });
-
-            //Distance Telemetre
-            UartEncodeAndSendMessage((int)Command_ID.distance_telemetre_IR, 3, new byte[] { 28, 120,45 });
-
-            //Consigne vitesse
-            UartEncodeAndSendMessage((int)Command_ID.consigne_vitesse, 2, new byte[] { 45, 60 });
+            }
         }
 
         private byte CalculateChecksum(int msgFunction, int msgPayloadLength, byte[] msgPayload)
@@ -192,7 +231,7 @@ namespace RobotInterfaceValentinBrisel
                     break;
 
                 case StateReception.FunctionMSB:
-                    msgDecodedFunction = c<<8;
+                    msgDecodedFunction = c << 8;
                     rcvState = StateReception.FunctionLSB;
                     break;
 
@@ -202,7 +241,7 @@ namespace RobotInterfaceValentinBrisel
                     break;
 
                 case StateReception.PayloadLengthMSB:
-                    msgDecodedPayloadLength = c<<8;
+                    msgDecodedPayloadLength = c << 8;
                     rcvState = StateReception.PayloadLengthLSB;
                     break;
 
@@ -216,7 +255,7 @@ namespace RobotInterfaceValentinBrisel
                     msgDecodedPayload[msgDecodedPayloadIndex] = c;
                     rcvState = StateReception.Payload;
 
-                    if ((msgDecodedPayloadLength-1) == msgDecodedPayloadIndex)
+                    if ((msgDecodedPayloadLength - 1) == msgDecodedPayloadIndex)
                     {
                         rcvState = StateReception.CheckSum;
                     }
@@ -224,13 +263,9 @@ namespace RobotInterfaceValentinBrisel
                     break;
 
                 case StateReception.CheckSum:
-                    if (CalculateChecksum(msgDecodedFunction,msgDecodedPayloadLength,msgDecodedPayload) == c)
+                    if (CalculateChecksum(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload) == c)
                     {
                         ProcessDecodedMessage(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
-                    }
-                    else
-                    {
-                        textBoxReception.Text += "Failed, message non valide\n";
                     }
                     rcvState = StateReception.Waiting;
                     break;
@@ -241,13 +276,8 @@ namespace RobotInterfaceValentinBrisel
             }
         }
 
-        private void displayMsg(byte [] msg)
+        private void displayMsg(byte[] msg)
         {
-            /*for (int i = 0; i < msgDecodedPayloadLength; i++)
-            {
-                textBoxReception.Text += msg[i].ToString("X2") + " ";
-            }*/
-
             textBoxReception.Text += Encoding.ASCII.GetString(msg);
             textBoxReception.Text += "\n";
         }
@@ -258,10 +288,12 @@ namespace RobotInterfaceValentinBrisel
             reglage_led = 0x0020,
             distance_telemetre_IR = 0x0030,
             consigne_vitesse = 0x0040,
-            RobotState = 0x0050
+            RobotState = 0x0050,
+            SET_ROBOT_STATE = 0x0051,
+            SET_ROBOT_AUTO_CONTROL = 0x0052
         }
 
-        private void ProcessDecodedMessage(int msgFunction,int msgPayloadLength, byte[] msgPayload)
+        private void ProcessDecodedMessage(int msgFunction, int msgPayloadLength, byte[] msgPayload)
         {
             switch (msgFunction)
             {
@@ -271,13 +303,13 @@ namespace RobotInterfaceValentinBrisel
                     break;
 
                 case (int)Command_ID.reglage_led:
-                    if ( (msgPayload[0]==(int)Robot.LED.led_rouge) && (msgPayload[1]==1) )
+                    if ((msgPayload[0] == (int)Robot.LED.led_rouge) && (msgPayload[1] == 1))
                     {
                         led_rouge.IsChecked = true;
                     }
-                    else if ((msgPayload[0] == (int)Robot.LED.led_rouge) && (msgPayload[1] == 0) )
+                    else if ((msgPayload[0] == (int)Robot.LED.led_rouge) && (msgPayload[1] == 0))
                     {
-                        led_rouge.IsChecked= false;
+                        led_rouge.IsChecked = false;
                     }
 
                     if ((msgPayload[0] == (int)Robot.LED.led_bleue) && (msgPayload[1] == 1))
@@ -329,7 +361,9 @@ namespace RobotInterfaceValentinBrisel
 
                 default:
                     break;
+
             }
         }
+
     }
 }
