@@ -18,8 +18,6 @@ using System.Windows.Threading;
 using System.Runtime.ConstrainedExecution;
 using System.Windows.Interop;
 using static RobotInterfaceValentinBrisel.Robot;
-using MouseKeyboardActivityMonitor.WinApi;
-using MouseKeyboardActivityMonitor;
 
 
 namespace RobotInterfaceValentinBrisel
@@ -37,15 +35,13 @@ namespace RobotInterfaceValentinBrisel
         DispatcherTimer timerAffichage;
         Robot robot = new Robot();
         bool autoControlActivated = true;
-        private readonly KeyboardHookListener m_KeyboardHookManager;
 
 
 
         public MainWindow()
-
         {
             InitializeComponent();
-            serialPort1 = new ExtendedSerialPort("COM6", 115200, Parity.None, 8, StopBits.One);
+            serialPort1 = new ExtendedSerialPort("COM5", 115200, Parity.None, 8, StopBits.One);
             serialPort1.DataReceived += SerialPort1_DataReceived; ;
             serialPort1.Open();
 
@@ -59,47 +55,6 @@ namespace RobotInterfaceValentinBrisel
             IR_droit_display.Text = "0";
             vitesse_gauche_display.Text = "0";
             vitesse_droite_display.Text = "0";
-
-            m_KeyboardHookManager = new KeyboardHookListener(new GlobalHooker());
-            m_KeyboardHookManager.Enabled = true;
-            //m_KeyboardHookManager.KeyDown += HookManager_KeyDown;
-        }
-
-        private void HookManager_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (autoControlActivated == false)
-            {
-                switch (e.Key)
-                {
-                    case Key.Left:
-                        UartEncodeAndSendMessage(0x0051, 1, new byte[] { ( byte)StateRobot.STATE_TOURNE_SUR_PLACE_GAUCHE});
-                        break;
-
-                    case Key.Right:
-                        UartEncodeAndSendMessage(0x0051, 1, new byte[]
-                        {
-                                (byte) StateRobot.STATE_TOURNE_SUR_PLACE_DROITE
-                        });
-                        break;
-
-                    case Key.Up:
-                        UartEncodeAndSendMessage(0x0051, 1, new byte[]
-                        { (byte) StateRobot.STATE_AVANCE});
-                        break;
-
-                    case Key.Down:
-                        UartEncodeAndSendMessage(0x0051, 1, new byte[]
-                        { (byte) StateRobot.STATE_ARRET});
-                        break;
-
-                    case Key.PageDown:
-                        UartEncodeAndSendMessage(0x0051, 1, new byte[]
-                        { (byte) StateRobot.STATE_RECULE});
-                        break;
-                }
-            }
-
-            throw new NotImplementedException();
         }
 
 
@@ -136,11 +91,40 @@ namespace RobotInterfaceValentinBrisel
             SendMessage();
         }
 
-        private void textBoxEmission_KeyUp(object sender, KeyEventArgs e)
+        private void textBoxEmission_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
                 SendMessage();
+            }
+
+            switch (e.Key)
+            {
+                case Key.Left:
+                    UartEncodeAndSendMessage(0x0051, 1, new byte[] { (byte)StateRobot.STATE_TOURNE_SUR_PLACE_GAUCHE });
+                    break;
+
+                case Key.Right:
+                    UartEncodeAndSendMessage(0x0051, 1, new byte[]
+                    {
+                                (byte) StateRobot.STATE_TOURNE_SUR_PLACE_DROITE
+                    });
+                    break;
+
+                case Key.Up:
+                    UartEncodeAndSendMessage(0x0051, 1, new byte[]
+                    { (byte) StateRobot.STATE_AVANCE});
+                    break;
+
+                case Key.Down:
+                    UartEncodeAndSendMessage(0x0051, 1, new byte[]
+                    { (byte) StateRobot.STATE_RECULE});
+                    break;
+
+                case Key.Escape:
+                    UartEncodeAndSendMessage(0x0051, 1, new byte[]
+                    { (byte) StateRobot.STATE_ARRET});
+                    break;
             }
         }
 

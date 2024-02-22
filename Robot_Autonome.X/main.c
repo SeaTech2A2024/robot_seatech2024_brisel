@@ -124,11 +124,13 @@ void OperatingSystemLoop(void) {
                 SetNextRobotStateInAutomaticMode();
             break;
             
-        case STATE_FREINAGE:
+        case STATE_RECULE:
             PWMSetSpeedConsigne(-25, MOTEUR_DROIT);
             PWMSetSpeedConsigne(-25, MOTEUR_GAUCHE);
+            stateRobot = STATE_RECULE_EN_COURS;
+            envoieChangementEtat();
 
-        case STATE_FREINAGE_EN_COURS:
+        case STATE_RECULE_EN_COURS:
             if ( autoControlActivated==1)
                 SetNextRobotStateInAutomaticMode();
             break;
